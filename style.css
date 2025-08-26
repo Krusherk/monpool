@@ -202,3 +202,15 @@ h1 {
     font-size: 1.5rem; /* 1rem × 1.5 */
   }
 }
+/* Logo container for top-left positioning */
+.logo-container {
+  position: absolute;
+  top: 16px;   /* adjust vertical spacing */
+  left: 16px;  /* adjust horizontal spacing */
+}
+
+/* Logo image */
+.logo {
+  width: 48px;   /* adjust size as needed */
+  height: auto;
+}
