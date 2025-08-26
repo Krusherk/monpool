@@ -83,14 +83,12 @@ export default async function handler(req, res) {
     } catch (txErr) {
       console.error("Faucet claim error:", txErr);
 
-      // Cleanly handle known errors
-      let message;
+      // Friendly error handling for reverted transactions
+      let message = "Transaction failed. Please try again.";
       if (txErr.reason?.includes("Already claimed") || txErr.message?.includes("Already claimed")) {
-        message = "You have already claimed. Try again later.";
+        message = "⛔ You have already claimed. Try again later.";
       } else if (txErr.reason?.includes("Faucet empty") || txErr.message?.includes("Faucet empty")) {
-        message = "Faucet empty: no MON left to claim.";
-      } else {
-        message = txErr.message;
+        message = "💧 Faucet is empty. Please wait for refill.";
       }
 
       return res.status(400).json({
