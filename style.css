@@ -110,57 +110,59 @@ h1 {
   word-break: break-all;
   letter-spacing: .3px;
 }
-/* Base styles remain the same for desktop */
-body {
-  font-size: 16px;
-}
-
-/* Mobile-first scaling */
+/* Mobile scaling: triple size for small screens */
 @media (max-width: 768px) {
   body {
-    font-size: 20px; /* bigger base font */
-    padding: 24px 16px;
+    font-size: 48px; /* 3x base font */
+    padding: 48px 32px;
   }
 
   .main {
     width: 100%;
-    padding: 2rem;
+    padding: 4rem;
     text-align: center;
   }
 
   h1 {
-    font-size: 2.4rem; /* bigger heading */
+    font-size: 6rem; /* really big heading */
     line-height: 1.3;
   }
 
   .subtitle {
-    font-size: 1.4rem;
-    margin-bottom: 1.5rem;
+    font-size: 3rem;
+    margin-bottom: 3rem;
   }
 
   .input {
-    font-size: 1.2rem;
-    padding: 16px;
+    font-size: 3.6rem;
+    padding: 48px;
     max-width: 100%;
+    border-radius: 28px;
   }
 
   .btn {
-    font-size: 1.25rem;
-    padding: 16px 20px;
+    font-size: 3.75rem;
+    padding: 48px 60px;
     max-width: 100%;
+    border-radius: 28px;
   }
 
   .status {
-    font-size: 1rem;
-    min-height: 28px;
+    font-size: 2.76rem;
+    min-height: 66px;
   }
 
   .list li {
-    font-size: 1.1rem;
-    margin-bottom: 8px;
+    font-size: 3.3rem;
+    margin-bottom: 24px;
   }
 
   .donate-label, .donate-addr {
-    font-size: 1.1rem;
+    font-size: 3.3rem;
+  }
+
+  .rule {
+    height: 3px;
+    margin: 60px auto;
   }
 }
