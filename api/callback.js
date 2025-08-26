@@ -1,4 +1,8 @@
-// /api/callback.js
+import { ethers } from "ethers";
+
+const faucetAddress = "0xeC2DD952D2aa6b7A0329ef7fea4D40717d735309";
+const faucetABI = ["function claim(address _to) external"];
+
 export default async function handler(req, res) {
   const { code, wallet } = req.query;
 
@@ -10,7 +14,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    // === Step 1: Exchange code for access token
+    // === Step 1: Exchange code -> token
     const tokenResponse = await fetch("https://discord.com/api/oauth2/token", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -19,7 +23,7 @@ export default async function handler(req, res) {
         client_secret: process.env.DISCORD_CLIENT_SECRET,
         grant_type: "authorization_code",
         code,
-        redirect_uri: "https://monpool.vercel.app/callback", // must match Discord app settings
+        redirect_uri: "https://monpool.vercel.app/callback",
       }),
     });
 
@@ -32,13 +36,12 @@ export default async function handler(req, res) {
       });
     }
 
-    // === Step 2: Fetch user info with access token
+    // === Step 2: Get Discord user
     const userResponse = await fetch("https://discord.com/api/users/@me", {
       headers: { Authorization: `Bearer ${tokenData.access_token}` },
     });
-
     const userData = await userResponse.json();
-    if (!userData || !userData.id) {
+    if (!userData.id) {
       return res.status(400).json({
         success: false,
         error: "Failed to fetch Discord user",
@@ -46,16 +49,31 @@ export default async function handler(req, res) {
       });
     }
 
-    // === Step 3: (later) Call faucet.claim(wallet) here with signer
+    // === Step 3: Faucet Claim ===
+    try {
+      const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL);
+      const signer = new ethers.Wallet(process.env.FAUCET_PRIVATE_KEY, provider);
 
-    return res.status(200).json({
-      success: true,
-      id: userData.id,
-      username: userData.username,
-      discriminator: userData.discriminator,
-      wallet,
-      // txHash: "pending", // add when faucet integration is live
-    });
+      const faucet = new ethers.Contract(faucetAddress, faucetABI, signer);
+
+      const tx = await faucet.claim(wallet);
+      await tx.wait();
+
+      return res.status(200).json({
+        success: true,
+        username: userData.username,
+        discriminator: userData.discriminator,
+        wallet,
+        txHash: tx.hash,
+      });
+    } catch (txErr) {
+      console.error("Faucet claim error:", txErr);
+      return res.status(500).json({
+        success: false,
+        error: "Faucet claim failed",
+        message: txErr.message,
+      });
+    }
   } catch (err) {
     console.error("Callback error:", err);
     return res.status(500).json({
@@ -65,4 +83,3 @@ export default async function handler(req, res) {
     });
   }
 }
-
