@@ -5,9 +5,7 @@ const faucetABI = [
 ];
 
 // === Discord OAuth ===
-const clientId = (typeof process !== "undefined" && process.env.DISCORD_CLIENT_ID) 
-  ? process.env.DISCORD_CLIENT_ID 
-  : "1409928328114339992"; 
+const clientId = "1409928328114339992"; 
 const redirectUri = "https://monpool.vercel.app/callback"; // must match Discord settings
 const scope = "identify";
 
@@ -41,10 +39,10 @@ window.onload = async () => {
       document.getElementById("status").innerText = "⏳ Verifying Discord...";
 
       // Exchange code -> token -> user via backend
-      const res = await fetch(`/api/callback?code=${code}`);
+      const res = await fetch(`/api/callback?code=${code}&wallet=${wallet}`);
       const data = await res.json();
 
-      if (!data.username) {
+      if (!data.success) {
         document.getElementById("status").innerText = "❌ Discord verification failed.";
         return;
       }
@@ -52,23 +50,13 @@ window.onload = async () => {
       document.getElementById("status").innerText =
         `✅ Discord Verified: ${data.username}. Sending claim...`;
 
-      // === Faucet Claim ===
-      const provider = new ethers.providers.JsonRpcProvider("https://testnet-rpc.monad.xyz");
-
-      if (!window.ethereum) {
-        alert("MetaMask required to sign claim!");
-        return;
+      // Wait for backend claim result
+      if (data.txHash) {
+        document.getElementById("status").innerText =
+          `✅ Claim successful! Hash: ${data.txHash}`;
+      } else {
+        document.getElementById("status").innerText = "❌ Claim failed.";
       }
-
-      await window.ethereum.request({ method: "eth_requestAccounts" });
-      const signer = new ethers.providers.Web3Provider(window.ethereum).getSigner();
-
-      const faucet = new ethers.Contract(faucetAddress, faucetABI, signer);
-      const tx = await faucet.claim(wallet);
-      document.getElementById("status").innerText = `⏳ Tx sent: ${tx.hash}`;
-
-      await tx.wait();
-      document.getElementById("status").innerText = `✅ Claim successful! Hash: ${tx.hash}`;
 
       // clear saved wallet & URL params
       localStorage.removeItem("pendingWallet");
