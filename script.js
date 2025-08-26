@@ -6,7 +6,7 @@ const faucetABI = [
 
 // === Discord OAuth ===
 const clientId = "1409928328114339992"; 
-const redirectUri = "https://monpool.vercel.app/callback"; // must match Discord settings
+const redirectUri = "https://monpool.vercel.app/callback";
 const scope = "identify";
 
 // Hook claimBtn
@@ -16,10 +16,8 @@ document.getElementById("claimBtn").addEventListener("click", () => {
     alert("Please paste a wallet address");
     return;
   }
-  // Store wallet so we can use it after redirect
   localStorage.setItem("pendingWallet", wallet);
 
-  // Redirect to Discord auth
   const discordAuthUrl =
     `https://discord.com/api/oauth2/authorize?client_id=${clientId}` +
     `&redirect_uri=${encodeURIComponent(redirectUri)}` +
@@ -27,14 +25,14 @@ document.getElementById("claimBtn").addEventListener("click", () => {
   window.location.href = discordAuthUrl;
 });
 
-// === Safe fetch to handle JSON or plain text errors ===
+// === helper to safely fetch JSON from backend ===
 async function safeFetchJSON(url) {
   const res = await fetch(url);
   const text = await res.text();
   try {
     return JSON.parse(text);
   } catch {
-    return { success: false, message: text }; // fallback if not JSON
+    return { success: false, message: text };
   }
 }
 
@@ -44,17 +42,14 @@ window.onload = async () => {
   const code = urlParams.get("code");
   const wallet = localStorage.getItem("pendingWallet");
 
-  // ✅ Only run auto-claim if both code + wallet exist
   if (code && wallet) {
     try {
       document.getElementById("status").innerText = "⏳ Verifying Discord...";
-
-      // Exchange code -> token -> user via backend (safe)
       const data = await safeFetchJSON(`/api/callback?code=${code}&wallet=${wallet}`);
 
       if (!data.success) {
-        // show detailed backend error if available
-        const errMsg = data.message || JSON.stringify(data.details) || "Discord verification failed";
+        // Show clean error message from backend
+        const errMsg = data.message || data.error || "Discord verification failed";
         document.getElementById("status").innerText = `❌ ${errMsg}`;
         return;
       }
@@ -62,17 +57,15 @@ window.onload = async () => {
       document.getElementById("status").innerText =
         `✅ Discord Verified: ${data.username}. Sending claim...`;
 
-      // Wait for backend claim result
       if (data.txHash) {
         document.getElementById("status").innerText =
           `✅ Claim successful! Hash: ${data.txHash}`;
       } else {
-        // show backend error if claim failed
-        const errMsg = data.message || JSON.stringify(data.data) || "Claim failed";
+        // Backend sends readable error messages like "Already claimed" or "Faucet empty"
+        const errMsg = data.message || "Claim failed";
         document.getElementById("status").innerText = `❌ ${errMsg}`;
       }
 
-      // clear saved wallet & URL params
       localStorage.removeItem("pendingWallet");
       window.history.replaceState({}, document.title, "/"); 
     } catch (err) {
