@@ -82,10 +82,18 @@ export default async function handler(req, res) {
       });
     } catch (txErr) {
       console.error("Faucet claim error:", txErr);
-      return res.status(500).json({
+
+      // Cleanly handle empty faucet
+      const message =
+        txErr.reason?.includes("Faucet empty") ||
+        txErr.message?.includes("Faucet empty")
+          ? "Faucet empty: no MON left to claim"
+          : txErr.message;
+
+      return res.status(400).json({
         success: false,
         error: "Faucet claim failed",
-        message: txErr.message,
+        message,
       });
     }
   } catch (err) {
@@ -97,3 +105,4 @@ export default async function handler(req, res) {
     });
   }
 }
+
