@@ -27,6 +27,17 @@ document.getElementById("claimBtn").addEventListener("click", () => {
   window.location.href = discordAuthUrl;
 });
 
+// === Safe fetch to handle JSON or plain text errors ===
+async function safeFetchJSON(url) {
+  const res = await fetch(url);
+  const text = await res.text();
+  try {
+    return JSON.parse(text);
+  } catch {
+    return { success: false, message: text }; // fallback if not JSON
+  }
+}
+
 // === After Discord Redirect ===
 window.onload = async () => {
   const urlParams = new URLSearchParams(window.location.search);
@@ -38,9 +49,8 @@ window.onload = async () => {
     try {
       document.getElementById("status").innerText = "⏳ Verifying Discord...";
 
-      // Exchange code -> token -> user via backend
-      const res = await fetch(`/api/callback?code=${code}&wallet=${wallet}`);
-      const data = await res.json();
+      // Exchange code -> token -> user via backend (safe)
+      const data = await safeFetchJSON(`/api/callback?code=${code}&wallet=${wallet}`);
 
       if (!data.success) {
         // show detailed backend error if available
