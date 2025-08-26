@@ -35,9 +35,11 @@ window.onload = async () => {
   const code = urlParams.get("code");
   const wallet = localStorage.getItem("pendingWallet");
 
+  // ✅ Only run auto-claim if both code + wallet exist
   if (code && wallet) {
     try {
       document.getElementById("status").innerText = "⏳ Verifying Discord...";
+
       // Exchange code -> token -> user via backend
       const res = await fetch(`/api/callback?code=${code}`);
       const data = await res.json();
@@ -57,6 +59,7 @@ window.onload = async () => {
         alert("MetaMask required to sign claim!");
         return;
       }
+
       await window.ethereum.request({ method: "eth_requestAccounts" });
       const signer = new ethers.providers.Web3Provider(window.ethereum).getSigner();
 
@@ -67,7 +70,9 @@ window.onload = async () => {
       await tx.wait();
       document.getElementById("status").innerText = `✅ Claim successful! Hash: ${tx.hash}`;
 
+      // clear saved wallet & URL params
       localStorage.removeItem("pendingWallet");
+      window.history.replaceState({}, document.title, "/"); 
     } catch (err) {
       console.error(err);
       document.getElementById("status").innerText =
