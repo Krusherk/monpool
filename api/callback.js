@@ -3,6 +3,16 @@ import { ethers } from "ethers";
 const faucetAddress = "0xeC2DD952D2aa6b7A0329ef7fea4D40717d735309";
 const faucetABI = ["function claim(address _to) external"];
 
+// --- helper to safely parse json ---
+async function safeJson(response) {
+  const text = await response.text();
+  try {
+    return JSON.parse(text);
+  } catch {
+    return { raw: text }; // fallback if not JSON
+  }
+}
+
 export default async function handler(req, res) {
   const { code, wallet } = req.query;
 
@@ -27,7 +37,7 @@ export default async function handler(req, res) {
       }),
     });
 
-    const tokenData = await tokenResponse.json();
+    const tokenData = await safeJson(tokenResponse);
     if (!tokenData.access_token) {
       return res.status(400).json({
         success: false,
@@ -40,7 +50,7 @@ export default async function handler(req, res) {
     const userResponse = await fetch("https://discord.com/api/users/@me", {
       headers: { Authorization: `Bearer ${tokenData.access_token}` },
     });
-    const userData = await userResponse.json();
+    const userData = await safeJson(userResponse);
     if (!userData.id) {
       return res.status(400).json({
         success: false,
