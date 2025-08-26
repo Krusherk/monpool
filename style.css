@@ -205,13 +205,19 @@ h1 {
 /* Logo container for top-left positioning */
 .logo-container {
   position: absolute;
-  top: 16px;   /* distance from top */
-  left: 16px;  /* distance from left */
+  top: 16px;
+  left: 16px;
 }
 
 /* Logo image */
 .logo {
-  width: 120px;   /* bigger logo */
-  max-width: 20%; /* never exceed 20% of screen width */
+  width: 150px;   /* set a fixed width for desktop */
   height: auto;
+}
+
+/* Optional: slightly smaller on small mobile screens */
+@media (max-width: 480px) {
+  .logo {
+    width: 120px;
+  }
 }
