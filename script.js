@@ -43,7 +43,9 @@ window.onload = async () => {
       const data = await res.json();
 
       if (!data.success) {
-        document.getElementById("status").innerText = "❌ Discord verification failed.";
+        // show detailed backend error if available
+        const errMsg = data.message || JSON.stringify(data.details) || "Discord verification failed";
+        document.getElementById("status").innerText = `❌ ${errMsg}`;
         return;
       }
 
@@ -55,7 +57,9 @@ window.onload = async () => {
         document.getElementById("status").innerText =
           `✅ Claim successful! Hash: ${data.txHash}`;
       } else {
-        document.getElementById("status").innerText = "❌ Claim failed.";
+        // show backend error if claim failed
+        const errMsg = data.message || JSON.stringify(data.data) || "Claim failed";
+        document.getElementById("status").innerText = `❌ ${errMsg}`;
       }
 
       // clear saved wallet & URL params
