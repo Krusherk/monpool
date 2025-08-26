@@ -1,18 +1,16 @@
 // /api/callback.js
-import { ethers } from "ethers";
-
 export default async function handler(req, res) {
+  const { code, wallet } = req.query;
+
+  if (!code) {
+    return res.status(400).json({ success: false, error: "Missing code" });
+  }
+  if (!wallet) {
+    return res.status(400).json({ success: false, error: "Missing wallet" });
+  }
+
   try {
-    const { code, wallet } = req.query;
-
-    if (!code) {
-      return res.status(400).json({ success: false, error: "Missing code" });
-    }
-    if (!wallet) {
-      return res.status(400).json({ success: false, error: "Missing wallet address" });
-    }
-
-    // === Step 1: Exchange code -> token
+    // === Step 1: Exchange code for access token
     const tokenResponse = await fetch("https://discord.com/api/oauth2/token", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -21,12 +19,12 @@ export default async function handler(req, res) {
         client_secret: process.env.DISCORD_CLIENT_SECRET,
         grant_type: "authorization_code",
         code,
-        redirect_uri: "https://monpool.vercel.app/callback",
+        redirect_uri: "https://monpool.vercel.app/callback", // must match Discord app settings
       }),
     });
 
-    const tokenData = await tokenResponse.json().catch(() => null);
-    if (!tokenData || !tokenData.access_token) {
+    const tokenData = await tokenResponse.json();
+    if (!tokenData.access_token) {
       return res.status(400).json({
         success: false,
         error: "Failed to get access token",
@@ -34,12 +32,12 @@ export default async function handler(req, res) {
       });
     }
 
-    // === Step 2: Get Discord user
+    // === Step 2: Fetch user info with access token
     const userResponse = await fetch("https://discord.com/api/users/@me", {
       headers: { Authorization: `Bearer ${tokenData.access_token}` },
     });
 
-    const userData = await userResponse.json().catch(() => null);
+    const userData = await userResponse.json();
     if (!userData || !userData.id) {
       return res.status(400).json({
         success: false,
@@ -48,12 +46,15 @@ export default async function handler(req, res) {
       });
     }
 
+    // === Step 3: (later) Call faucet.claim(wallet) here with signer
+
     return res.status(200).json({
       success: true,
       id: userData.id,
       username: userData.username,
       discriminator: userData.discriminator,
-      // txHash: tx.hash, // when faucet enabled
+      wallet,
+      // txHash: "pending", // add when faucet integration is live
     });
   } catch (err) {
     console.error("Callback error:", err);
@@ -64,3 +65,4 @@ export default async function handler(req, res) {
     });
   }
 }
+
