@@ -38,6 +38,7 @@ export default async function handler(req, res) {
     });
 
     const tokenData = await safeJson(tokenResponse);
+    console.log("Token data:", tokenData); // <-- debug
     if (!tokenData.access_token) {
       return res.status(400).json({
         success: false,
@@ -51,6 +52,7 @@ export default async function handler(req, res) {
       headers: { Authorization: `Bearer ${tokenData.access_token}` },
     });
     const userData = await safeJson(userResponse);
+    console.log("User data:", userData); // <-- debug
     if (!userData.id) {
       return res.status(400).json({
         success: false,
@@ -66,8 +68,10 @@ export default async function handler(req, res) {
 
       const faucet = new ethers.Contract(faucetAddress, faucetABI, signer);
 
+      console.log("Sending claim to faucet:", wallet); // <-- debug
       const tx = await faucet.claim(wallet);
       await tx.wait();
+      console.log("Claim tx hash:", tx.hash); // <-- debug
 
       return res.status(200).json({
         success: true,
