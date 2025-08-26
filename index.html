@@ -29,6 +29,17 @@
     <p class="donate-addr">0xaF18599A30d6462B6a99e6EEA71b13e3971f02d5</p>
   </main>
 
+  <!-- 👇 Tiny inline callback handler -->
+  <script>
+    // If Discord redirected back with ?code=...
+    if (window.location.pathname === "/callback") {
+      // Load the same script.js logic
+      const s = document.createElement("script");
+      s.src = "/script.js";
+      document.body.appendChild(s);
+    }
+  </script>
+
   <script src="script.js"></script>
 </body>
 </html>
