@@ -110,3 +110,42 @@ h1 {
   word-break: break-all;
   letter-spacing: .3px;
 }
+/* Make everything scale nicely on small screens */
+body {
+  font-size: 16px; /* default */
+}
+
+@media (max-width: 600px) {
+  body {
+    font-size: 18px;  /* bump up font size */
+    padding: 1rem;
+  }
+
+  .main {
+    width: 100%;
+    padding: 1.5rem;
+  }
+
+  h1 {
+    font-size: 1.8rem; /* bigger headline */
+  }
+
+  .subtitle {
+    font-size: 1.2rem;
+  }
+
+  .input, .btn {
+    font-size: 1.1rem;
+    padding: 1rem;
+    width: 100%;   /* stretch input & button to full width */
+    box-sizing: border-box;
+  }
+
+  .list li {
+    font-size: 1rem;
+  }
+
+  .donate-label, .donate-addr {
+    font-size: 1rem;
+  }
+}
