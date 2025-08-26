@@ -5,7 +5,7 @@ const faucetABI = [
 ];
 
 // === Discord OAuth ===
-const clientId = process.env.DISCORD_CLIENT_ID || "1283746879123456789"; // replace in .env + Vercel
+const clientId = process.env.DISCORD_CLIENT_ID "1283746879123456789"; // replace in .env + Vercel
 const redirectUri = "https://monpool.vercel.app/callback"; // must match Discord settings
 const scope = "identify";
 
