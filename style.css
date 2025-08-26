@@ -110,12 +110,18 @@ h1 {
   word-break: break-all;
   letter-spacing: .3px;
 }
-/* Mobile scaling: triple size for small screens */
-@media (max-width: 768px) {
-  body {
-    font-size: 48px; /* 3x base font */
-    padding: 48px 32px;
+/* Scale everything using CSS transform on the main container */
+@media (max-width: 1024px) {
+  .main {
+    transform: scale(3);       /* triple size */
+    transform-origin: top center; 
+    width: 100%;
   }
+
+  body {
+    padding-top: 48px; /* optional, so top spacing works with scale */
+  }
+}
 
   .main {
     width: 100%;
