@@ -4,23 +4,53 @@ const faucetABI = [
   "event Claimed(address indexed to, uint256 amount)"
 ];
 
-// Discord OAuth (placeholder: needs backend redirect)
+// === Discord OAuth Login ===
+const clientId = "YOUR_DISCORD_CLIENT_ID"; // replace in .env + Vercel
+const redirectUri = "https://monpool.vercel.app/callback"; // must match Discord settings
+const scope = "identify";
+
 document.getElementById("discordLogin").addEventListener("click", () => {
-  // Replace with your actual Discord OAuth2 URL
-  const clientId = "YOUR_DISCORD_CLIENT_ID";
-  const redirectUri = encodeURIComponent(window.location.origin);
-  const scope = "identify";
-  window.location.href = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=token&scope=${scope}`;
+  const discordAuthUrl =
+    `https://discord.com/api/oauth2/authorize?client_id=${clientId}` +
+    `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+    `&response_type=code&scope=${scope}`;
+  window.location.href = discordAuthUrl;
 });
 
-// Check if Discord token in URL (after redirect)
-window.onload = () => {
-  if (window.location.hash.includes("access_token")) {
-    document.getElementById("discordStatus").innerText = "✅ Discord Verified!";
+// === Callback check (after redirect) ===
+window.onload = async () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const code = urlParams.get("code");
+
+  if (code) {
+    try {
+      // Hit your backend API to exchange code -> token -> user
+      const res = await fetch(`/api/callback?code=${code}`);
+      const data = await res.json();
+
+      if (data.username) {
+        localStorage.setItem("discordUser", data.username);
+        document.getElementById("discordStatus").innerText =
+          `✅ Discord Verified: ${data.username}`;
+        document.getElementById("claimBtn").disabled = false;
+      } else {
+        document.getElementById("discordStatus").innerText =
+          "❌ Discord verification failed.";
+      }
+    } catch (err) {
+      console.error(err);
+      document.getElementById("discordStatus").innerText =
+        "❌ Discord verification error.";
+    }
+  } else if (localStorage.getItem("discordUser")) {
+    // Already verified
+    document.getElementById("discordStatus").innerText =
+      `✅ Discord Verified: ${localStorage.getItem("discordUser")}`;
     document.getElementById("claimBtn").disabled = false;
   }
 };
 
+// === Faucet Claim ===
 document.getElementById("claimBtn").addEventListener("click", async () => {
   const wallet = document.getElementById("walletAddress").value.trim();
   if (!wallet) {
@@ -31,11 +61,10 @@ document.getElementById("claimBtn").addEventListener("click", async () => {
   try {
     document.getElementById("status").innerText = "⏳ Sending claim transaction...";
 
-    // Use a public RPC (Monad testnet)
+    // Monad testnet RPC
     const provider = new ethers.providers.JsonRpcProvider("https://testnet-rpc.monad.xyz");
 
-    // You need a funded signer (server-side preferred)
-    // For demo, we connect via a browser wallet like MetaMask
+    // Require MetaMask
     if (!window.ethereum) {
       alert("MetaMask required to sign claim!");
       return;
