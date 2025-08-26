@@ -1,39 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Monad Testnet Faucet</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.min.js"></script>
-</head>
 <body>
-  <div class="container">
-    <h1>💧 Monad Testnet Faucet</h1>
+  <h1>💧 Monad Testnet Faucet</h1>
+  <p class="subtitle">Claim Testnet Tokens<br>You can claim again every 24hrs</p>
 
-    <p class="subtitle">Claim Testnet Tokens<br>You can claim again every 24hrs</p>
+  <input type="text" id="walletAddress" placeholder="Paste your wallet address" />
+  <button id="claimBtn">Claim</button>
 
-    <!-- Wallet input -->
-    <input id="walletAddress" type="text" placeholder="Paste your wallet address" />
-
-    <!-- Claim button -->
-    <button id="claimBtn" disabled>Claim</button>
-
-    <p id="status"></p>
-
-    <div class="instructions">
-      <p>• Paste your wallet address</p>
-      <p>• Follow creator 
-        <a href="https://x.com/0xqowiyy" target="_blank">Crack</a>
-      </p>
-      <p>• Turn on notifications for more updates</p>
-    </div>
-
-    <div class="donate">
-      <p>You can donate to the faucet.</p>
-      <p><strong>0xaF18599A30d6462B6a99e6EEA71b13e3971f02d5</strong></p>
-    </div>
+  <div class="footer">
+    • Paste your wallet address <br>
+    • Follow creator <a href="https://x.com/0xqowiyy" target="_blank">Crack</a> <br>
+    • Turn on notifications for more updates
   </div>
 
-  <script src="script.js"></script>
+  <div class="donate">
+    You can donate to the faucet: <br>
+    0xaF18599A30d6462B6a99e6EEA71b13e3971f02d5
+  </div>
+
+  <p id="status"></p>
 </body>
-</html>
