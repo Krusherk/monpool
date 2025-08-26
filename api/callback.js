@@ -38,7 +38,7 @@ export default async function handler(req, res) {
     });
 
     const tokenData = await safeJson(tokenResponse);
-    console.log("Token data:", tokenData); // <-- debug
+    console.log("Token data:", tokenData);
     if (!tokenData.access_token) {
       return res.status(400).json({
         success: false,
@@ -52,7 +52,7 @@ export default async function handler(req, res) {
       headers: { Authorization: `Bearer ${tokenData.access_token}` },
     });
     const userData = await safeJson(userResponse);
-    console.log("User data:", userData); // <-- debug
+    console.log("User data:", userData);
     if (!userData.id) {
       return res.status(400).json({
         success: false,
@@ -68,10 +68,10 @@ export default async function handler(req, res) {
 
       const faucet = new ethers.Contract(faucetAddress, faucetABI, signer);
 
-      console.log("Sending claim to faucet:", wallet); // <-- debug
+      console.log("Sending claim to faucet:", wallet);
       const tx = await faucet.claim(wallet);
       await tx.wait();
-      console.log("Claim tx hash:", tx.hash); // <-- debug
+      console.log("Claim tx hash:", tx.hash);
 
       return res.status(200).json({
         success: true,
@@ -83,12 +83,15 @@ export default async function handler(req, res) {
     } catch (txErr) {
       console.error("Faucet claim error:", txErr);
 
-      // Cleanly handle empty faucet
-      const message =
-        txErr.reason?.includes("Faucet empty") ||
-        txErr.message?.includes("Faucet empty")
-          ? "Faucet empty: no MON left to claim"
-          : txErr.message;
+      // Cleanly handle known errors
+      let message;
+      if (txErr.reason?.includes("Already claimed") || txErr.message?.includes("Already claimed")) {
+        message = "You have already claimed. Try again later.";
+      } else if (txErr.reason?.includes("Faucet empty") || txErr.message?.includes("Faucet empty")) {
+        message = "Faucet empty: no MON left to claim.";
+      } else {
+        message = txErr.message;
+      }
 
       return res.status(400).json({
         success: false,
@@ -105,4 +108,3 @@ export default async function handler(req, res) {
     });
   }
 }
-
