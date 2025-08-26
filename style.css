@@ -1,110 +1,88 @@
-/* Blue gradient background */
+/* Full page background */
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #0a84ff, #0061a8);
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: #0a1a2f; /* really dark blue */
   color: #fff;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  height: 100vh;
-  margin: 0;
-}
-
-/* Center container */
-.container {
+  justify-content: flex-start; /* keep content from hugging middle */
+  min-height: 100vh;
   text-align: center;
-  background: rgba(255, 255, 255, 0.08);
-  padding: 2rem;
-  border-radius: 16px;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.25);
-  width: 90%;
-  max-width: 450px;
+  padding-top: 50px; /* pushes content down a bit */
 }
 
+/* Title */
 h1 {
-  margin-bottom: 0.5rem;
-  font-size: 1.8rem;
+  font-size: 2rem;
+  margin-bottom: 10px;
+  background: linear-gradient(90deg, #4facfe, #00f2fe);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
+/* Info text under title */
 .subtitle {
   font-size: 1rem;
-  margin-bottom: 1.5rem;
-  opacity: 0.9;
+  color: #b3c0d9;
+  margin-bottom: 30px;
 }
 
-/* Input styling */
-input {
-  width: 100%;
-  padding: 14px;
-  margin-bottom: 1rem;
-  border-radius: 10px;
-  border: none;
+/* Wallet input */
+input[type="text"] {
+  width: 80%;
+  max-width: 420px;
+  padding: 15px;
   font-size: 1rem;
+  border-radius: 12px;
+  border: none;
   outline: none;
+  margin-bottom: 20px;
   text-align: center;
 }
 
-/* Modern button */
+/* Claim button */
 button {
-  width: 100%;
-  padding: 14px;
-  margin-bottom: 1.5rem;
-  background: linear-gradient(90deg, #007bff, #00c6ff);
+  width: 200px;
+  padding: 15px;
+  font-size: 1.1rem;
   border: none;
   border-radius: 12px;
-  color: white;
-  font-size: 1.1rem;
-  font-weight: bold;
   cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-button:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(0,0,0,0.3);
-}
-
-button:disabled {
-  background: gray;
-  cursor: not-allowed;
-}
-
-/* Status messages */
-#status {
-  margin: 1rem 0;
-  font-size: 0.9rem;
-  min-height: 20px;
-}
-
-/* Instructions */
-.instructions {
-  margin-top: 1.5rem;
-  text-align: left;
-  font-size: 0.9rem;
-  opacity: 0.85;
-}
-
-.instructions a {
-  color: #00c6ff;
-  text-decoration: none;
+  background: linear-gradient(90deg, #4facfe, #00f2fe);
+  color: white;
   font-weight: bold;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  margin: 0 auto 30px auto;
+  display: block;
 }
 
-.instructions a:hover {
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 242, 254, 0.3);
+}
+
+/* Footer / instructions */
+.footer {
+  margin-top: 40px;
+  font-size: 0.9rem;
+  color: #a0aec0;
+}
+
+.footer a {
+  color: #00f2fe;
+  text-decoration: none;
+}
+
+.footer a:hover {
   text-decoration: underline;
 }
 
-/* Donate section */
+/* Donation address */
 .donate {
-  margin-top: 1.5rem;
-  padding-top: 1rem;
-  border-top: 1px solid rgba(255,255,255,0.2);
-  font-size: 0.85rem;
-}
-
-.donate strong {
-  display: block;
-  margin-top: 0.5rem;
+  margin-top: 20px;
+  color: #00f2fe;
+  font-weight: bold;
   word-break: break-all;
-  color: #00ffea;
 }
