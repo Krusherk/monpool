@@ -110,42 +110,57 @@ h1 {
   word-break: break-all;
   letter-spacing: .3px;
 }
-/* Make everything scale nicely on small screens */
+/* Base styles remain the same for desktop */
 body {
-  font-size: 16px; /* default */
+  font-size: 16px;
 }
 
-@media (max-width: 600px) {
+/* Mobile-first scaling */
+@media (max-width: 768px) {
   body {
-    font-size: 18px;  /* bump up font size */
-    padding: 1rem;
+    font-size: 20px; /* bigger base font */
+    padding: 24px 16px;
   }
 
   .main {
     width: 100%;
-    padding: 1.5rem;
+    padding: 2rem;
+    text-align: center;
   }
 
   h1 {
-    font-size: 1.8rem; /* bigger headline */
+    font-size: 2.4rem; /* bigger heading */
+    line-height: 1.3;
   }
 
   .subtitle {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
   }
 
-  .input, .btn {
-    font-size: 1.1rem;
-    padding: 1rem;
-    width: 100%;   /* stretch input & button to full width */
-    box-sizing: border-box;
+  .input {
+    font-size: 1.2rem;
+    padding: 16px;
+    max-width: 100%;
+  }
+
+  .btn {
+    font-size: 1.25rem;
+    padding: 16px 20px;
+    max-width: 100%;
+  }
+
+  .status {
+    font-size: 1rem;
+    min-height: 28px;
   }
 
   .list li {
-    font-size: 1rem;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
   }
 
   .donate-label, .donate-addr {
-    font-size: 1rem;
+    font-size: 1.1rem;
   }
 }
