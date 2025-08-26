@@ -1,14 +1,17 @@
+// === Faucet Contract ===
 const faucetAddress = "0xeC2DD952D2aa6b7A0329ef7fea4D40717d735309";
 const faucetABI = [
   "function claim(address _to) external",
   "event Claimed(address indexed to, uint256 amount)"
 ];
 
-// === Discord OAuth Login ===
-const clientId = "YOUR_DISCORD_CLIENT_ID"; // replace in .env + Vercel
-const redirectUri = "https://monpool.vercel.app/callback"; // must match Discord settings
+// === Discord OAuth Config ===
+// ⚠️ IMPORTANT: put CLIENT_ID in .env and use process.env on backend
+const clientId = "1409928328114339992"; // replace with your actual client ID
+const redirectUri = "https://monpool.vercel.app/api/callback"; // must match Discord dev portal
 const scope = "identify";
 
+// Discord Login Button
 document.getElementById("discordLogin").addEventListener("click", () => {
   const discordAuthUrl =
     `https://discord.com/api/oauth2/authorize?client_id=${clientId}` +
@@ -17,14 +20,14 @@ document.getElementById("discordLogin").addEventListener("click", () => {
   window.location.href = discordAuthUrl;
 });
 
-// === Callback check (after redirect) ===
+// === Handle Discord Callback ===
 window.onload = async () => {
   const urlParams = new URLSearchParams(window.location.search);
   const code = urlParams.get("code");
 
   if (code) {
     try {
-      // Hit your backend API to exchange code -> token -> user
+      // Call backend to exchange code -> token -> user
       const res = await fetch(`/api/callback?code=${code}`);
       const data = await res.json();
 
@@ -43,14 +46,17 @@ window.onload = async () => {
         "❌ Discord verification error.";
     }
   } else if (localStorage.getItem("discordUser")) {
-    // Already verified
+    // Already verified before
     document.getElementById("discordStatus").innerText =
       `✅ Discord Verified: ${localStorage.getItem("discordUser")}`;
     document.getElementById("claimBtn").disabled = false;
+  } else {
+    // Default: disable claim until login
+    document.getElementById("claimBtn").disabled = true;
   }
 };
 
-// === Faucet Claim ===
+// === Faucet Claim Logic ===
 document.getElementById("claimBtn").addEventListener("click", async () => {
   const wallet = document.getElementById("walletAddress").value.trim();
   if (!wallet) {
