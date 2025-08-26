@@ -113,7 +113,58 @@ h1 {
 /* Mobile-specific adjustments: 1.5x bigger */
 @media (max-width: 768px) {
   body {
-    padding: 32px 16px;
+    padding: 40px 16px; /* a little extra for breathing room */
+  }
+
+  .main {
+    max-width: 90%; /* keeps layout tight on small screens */
+    margin: 0 auto;
+  }
+
+  h1 {
+    font-size: 3rem; /* 2rem × 1.5 */
+  }
+
+  .subtitle {
+    font-size: 1.5rem; /* 1rem × 1.5 */
+  }
+
+  .input {
+    padding: 21px 24px; /* 14px × 1.5 */
+    font-size: 1.5rem; /* 1rem × 1.5 */
+  }
+
+  .btn {
+    padding: 21px 27px; /* 14px × 1.5 / 18px × 1.5 */
+    font-size: 1.575rem; /* 1.05rem × 1.5 */
+  }
+
+  .list {
+    font-size: 1.38rem; /* ~0.92rem × 1.5 */
+    padding-left: 33px; /* 22px × 1.5 */
+  }
+
+  .status {
+    font-size: 1.38rem; /* 0.92rem × 1.5 */
+  }
+
+  .donate-label {
+    font-size: 1.5rem; /* 1rem × 1.5 */
+  }
+
+  .donate-addr {
+    font-size: 1.5rem; /* 1rem × 1.5 */
+  }
+}
+/* Mobile-specific adjustments: 1.5x bigger */
+@media (max-width: 768px) {
+  body {
+    padding: 40px 16px; /* a little extra for breathing room */
+  }
+
+  .main {
+    max-width: 90%; /* keeps layout tight on small screens */
+    margin: 0 auto;
   }
 
   h1 {
