@@ -110,65 +110,46 @@ h1 {
   word-break: break-all;
   letter-spacing: .3px;
 }
-/* Scale everything on smaller screens */
-@media (max-width: 1024px) {
-  .main {
-    transform: scale(1.8);       /* 1.8x instead of 3x */
-    transform-origin: top center; 
-    width: 100%;
-  }
-
+/* Mobile-specific adjustments */
+@media (max-width: 768px) {
   body {
-    padding-top: 32px; /* adjust spacing for scale */
-  }
-}
-
-  .main {
-    width: 100%;
-    padding: 4rem;
-    text-align: center;
+    padding: 32px 16px;
   }
 
   h1 {
-    font-size: 6rem; /* really big heading */
-    line-height: 1.3;
+    font-size: 2.5rem; /* bigger heading */
   }
 
   .subtitle {
-    font-size: 3rem;
-    margin-bottom: 3rem;
+    font-size: 1.2rem; /* bigger subtitle */
   }
 
   .input {
-    font-size: 3.6rem;
-    padding: 48px;
-    max-width: 100%;
-    border-radius: 28px;
+    padding: 18px 20px;
+    font-size: 1.1rem;
   }
 
   .btn {
-    font-size: 3.75rem;
-    padding: 48px 60px;
-    max-width: 100%;
-    border-radius: 28px;
+    padding: 16px 20px;
+    font-size: 1.2rem;
+  }
+
+  .list {
+    font-size: 1rem;
+    padding-left: 24px;
   }
 
   .status {
-    font-size: 2.76rem;
-    min-height: 66px;
+    font-size: 1rem;
   }
-
-  .list li {
-    font-size: 3.3rem;
-    margin-bottom: 24px;
-  }
+}
 
   .donate-label, .donate-addr {
-    font-size: 3.3rem;
+    font-size: 1rem;
   }
 
   .rule {
     height: 3px;
-    margin: 60px auto;
+    margin: 24px auto;
   }
 }
