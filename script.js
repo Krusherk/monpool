@@ -1,15 +1,6 @@
 const faucetAddress = "0xeC2DD952D2aa6b7A0329ef7fea4D40717d735309";
 const faucetABI = [
   "function claim(address _to) external",
-export default async function handler(req,res){
-  try{
-    // ...existing logic
-  }catch(e){
-    console.error("Server function error:", e);
-    return res.status(500).json({ success:false, error:e.message });
-  }
-}
-
   "event Claimed(address indexed to, uint256 amount)"
 ];
 
