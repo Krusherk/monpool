@@ -43,6 +43,54 @@
   </script>
 
   <script src="script.js"></script>
-
 </body>
 </html>
+<!-- index.html -->
+<script type="module">
+  // 1️⃣ Firebase & database setup
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+  import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBJC8jBpf4RJcrjAhgYumUmYzlOxma-ojk",
+    authDomain: "flappydak.firebaseapp.com",
+    databaseURL: "https://flappydak-default-rtdb.firebaseio.com",
+    projectId: "flappydak",
+    storageBucket: "flappydak.firebasestorage.app",
+    messagingSenderId: "189314171470",
+    appId: "1:189314171470:web:4c3a9068fdb909b147791f",
+    measurementId: "G-R0LF3F59W9"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  // 2️⃣ Helper function to store a claim
+  async function saveClaim(discordId, discordName) {
+    const claimRef = ref(db, `claims/${discordId}`);
+
+    const snapshot = await get(claimRef);
+    if (snapshot.exists()) {
+      const lastClaim = snapshot.val().lastClaim;
+      const now = Date.now();
+
+      if (now - lastClaim < 24 * 60 * 60 * 1000) {
+        throw new Error("⏳ You can only claim once every 24h!");
+      }
+    }
+
+    // Save new claim
+    await set(claimRef, {
+      discordName,
+      lastClaim: Date.now(),
+    });
+  }
+
+  // 3️⃣ Your existing Claim button logic
+  document.getElementById("claimBtn").addEventListener("click", () => {
+    // redirect to Discord OAuth here...
+  });
+
+  // 4️⃣ After getting Discord user data
+  // await saveClaim(discordId, username);
+</script>
